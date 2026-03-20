@@ -19,18 +19,19 @@ Key differences from CPython:
 
 ## Deploying Code
 
+### deploy.sh
+
+```bash
+./deploy.sh
+```
+
+Copies `main.py`, `font.py`, and `index.html` to the board and resets it in a single mpremote session.
+
 ### mpremote
 
 ```bash
 # Install mpremote on your host machine
 pip install mpremote
-
-# Copy all project files to the board
-mpremote cp main.py :main.py
-mpremote cp font.py :font.py
-
-# Reset the board to run the new code
-mpremote reset
 
 # Open a REPL session
 mpremote repl
@@ -44,5 +45,7 @@ mpremote repl
 
 ## Project Structure
 
-- `main.py` — entry point; drives the LED matrix with scrolling rainbow text
-- `font.py` — 8-row bitmap font definitions and `render_text()` helper
+- `main.py` — entry point; connects to WiFi, hosts a web server, drives the LED matrix
+- `font.py` — 8-row bitmap font definitions, `render_text()` helper, and special character constants
+- `index.html` — web UI served by the Pi for submitting text to the sign
+- `deploy.sh` — deploys all files to the board and resets

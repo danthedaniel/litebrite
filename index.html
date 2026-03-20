@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LiteBrite</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a0f;
+      color: #eee;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 440px;
+      background: linear-gradient(145deg, #151520, #1a1a2e);
+      border: 1px solid #2a2a3a;
+      border-radius: 16px;
+      padding: 36px 32px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    #charcount {
+      display:block;
+      margin-top:8px;
+      color:#555;
+      font-size:13px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #0ff;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+    }
+
+    input[type=text] {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      background: #0d0d14;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type=text]:focus {
+      border-color: #0aa;
+    }
+
+    input[type=text]::placeholder {
+      color: #555;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, #099, #0bb);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    button:active {
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>LiteBrite</h1>
+    <form method="POST" action="/text" autocomplete="off">
+      <input
+        type="text"
+        name="text"
+        placeholder="Enter message..."
+        maxlength="32"
+        autofocus
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+      >
+      <small id="charcount">0 / 32</small>
+      <button type="submit">Send</button>
+    </form>
+  </div>
+  <script>
+    const input = document.querySelector('input[name=text]');
+    const counter = document.getElementById('charcount');
+
+    input.addEventListener('input', function() {
+      counter.textContent = input.value.length + ' / 32';
+      counter.style.color = input.value.length >= 32 ? '#f44' : '#555';
+    });
+  </script>
+</body>
+</html>
