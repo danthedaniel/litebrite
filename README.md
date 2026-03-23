@@ -1,4 +1,6 @@
-# LED Sign
+# litebrite
+
+![Demo](demo.gif)
 
 ## Hardware
 
