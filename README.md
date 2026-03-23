@@ -25,7 +25,7 @@ Key differences from CPython:
 ./deploy.sh
 ```
 
-Copies `main.py`, `font.py`, and `index.html` to the board and resets it in a single mpremote session.
+Copies all runtime files to the board and resets it in a single mpremote session.
 
 ### mpremote
 
@@ -42,10 +42,3 @@ mpremote repl
 1. Hold BOOTSEL while plugging in the Pico — it mounts as a USB drive
 2. Download the MicroPython `.uf2` for **Pico 2W** from https://micropython.org/download/RPI_PICO2_W/
 3. Drag the `.uf2` onto the mounted drive — board reboots into MicroPython
-
-## Project Structure
-
-- `main.py` — entry point; connects to WiFi, hosts a web server, drives the LED matrix
-- `font.py` — 8-row bitmap font definitions, `render_text()` helper, and special character constants
-- `index.html` — web UI served by the Pi for submitting text to the sign
-- `deploy.sh` — deploys all files to the board and resets
