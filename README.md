@@ -19,28 +19,26 @@ Key differences from CPython:
 - No `pip` — only built-in modules and files copied to the board
 - Limited RAM — keep data structures small and avoid large allocations
 
-## Deploying Code
-
-### deploy.sh
+## Setup
 
 ```bash
-./deploy.sh
+# Installs type stubs for editor/IDE support
+# Installs mpremote
+make setup
 ```
 
-Copies all runtime files to the board and resets it in a single mpremote session.
+Requires [uv](https://docs.astral.sh/uv/). Installs MicroPython type stubs into `typings/` for use with basedpyright/pylance, and installs `mpremote` for deploying to the board.
 
-### mpremote
-
-```bash
-# Install mpremote on your host machine
-pip install mpremote
-
-# Open a REPL session
-mpremote repl
-```
-
-### Flashing MicroPython firmware
+## Flashing MicroPython firmware
 
 1. Hold BOOTSEL while plugging in the Pico — it mounts as a USB drive
 2. Download the MicroPython `.uf2` for **Pico 2W** from https://micropython.org/download/RPI_PICO2_W/
 3. Drag the `.uf2` onto the mounted drive — board reboots into MicroPython
+
+## Deploying Code
+
+```bash
+make deploy
+```
+
+Copies all runtime files to the board and resets it.

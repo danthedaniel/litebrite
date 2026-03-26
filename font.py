@@ -956,20 +956,26 @@ FONT = {
     ],
 }
 
-def render_text(text):
+Bitmap = list
+
+def render_text(text: str) -> Bitmap:
     """Render text into an 8-row bitmap (list of columns).
     Returns a list of columns, where each column is a list of 8 pixel values.
     Font rows are top-to-bottom (row 0 = top of glyph)."""
-    columns = []
+    columns: Bitmap = []
     first = True
     for ch in text:
         glyph = FONT.get(ch)
         if glyph is None:
             continue
+
         if not first:
-            columns.append([0] * 8)  # 1px gap
+            columns.append([False] * 8)  # 1px gap
+
         first = False
         char_width = len(glyph[0])
+
         for col in range(char_width):
-            columns.append([glyph[row][col] for row in range(8)])
+            columns.append([bool(glyph[row][col]) for row in range(8)])
+
     return columns

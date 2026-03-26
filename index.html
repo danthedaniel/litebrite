@@ -66,6 +66,64 @@
       color: #555;
     }
 
+    .options {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+    }
+
+    .option {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .option label {
+      font-size: 13px;
+      color: #888;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 14px;
+      background: #0d0d14;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23555' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    select:focus {
+      border-color: #0aa;
+    }
+
+    .checkbox-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 38px;
+      margin-top: auto;
+    }
+
+    .checkbox-wrap input[type=checkbox] {
+      width: 18px;
+      height: 18px;
+      accent-color: #0aa;
+      cursor: pointer;
+    }
+
+    .checkbox-wrap span {
+      font-size: 14px;
+      color: #fff;
+    }
+
     button {
       width: 100%;
       margin-top: 14px;
@@ -88,6 +146,17 @@
     button:active {
       opacity: 0.7;
     }
+
+    #error {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #f44;
+      background: rgba(255, 68, 68, 0.1);
+      border: 1px solid rgba(255, 68, 68, 0.3);
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -106,7 +175,32 @@
         spellcheck="false"
       >
       <small id="charcount">0 / 32</small>
+      <div class="options">
+        <div class="option">
+          <label for="color">Color</label>
+          <select name="color" id="color">
+            <option value="rainbow" selected>Rainbow</option>
+            <option value="#FF0000">Red</option>
+            <option value="#FF6600">Orange</option>
+            <option value="#FFFF00">Yellow</option>
+            <option value="#00FF00">Green</option>
+            <option value="#00FFFF">Cyan</option>
+            <option value="#0000FF">Blue</option>
+            <option value="#8800FF">Purple</option>
+            <option value="#FF00FF">Pink</option>
+            <option value="#FFFFFF">White</option>
+          </select>
+        </div>
+        <div class="option">
+          <label>&nbsp;</label>
+          <div class="checkbox-wrap">
+            <input type="checkbox" name="scrolling" id="scrolling" value="true" checked>
+            <span>Scroll</span>
+          </div>
+        </div>
+      </div>
       <button type="submit">Send</button>
+      <div id="error"></div>
     </form>
   </div>
   <script>
@@ -117,6 +211,14 @@
       counter.textContent = input.value.length + ' / 32';
       counter.style.color = input.value.length >= 32 ? '#f44' : '#555';
     });
+
+    const err = new URLSearchParams(location.search).get('error');
+    if (err) {
+      const el = document.getElementById('error');
+      el.textContent = err;
+      el.style.display = 'block';
+      history.replaceState(null, '', '/');
+    }
   </script>
 </body>
 </html>
