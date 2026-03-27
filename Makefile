@@ -1,4 +1,4 @@
-RUNTIME_FILES = main.py microdot.py font.py screen.py index.html
+RUNTIME_FILES = main.py microdot.py font.py screen.py colors.py index.html
 
 .PHONY: setup deploy repl
 

@@ -1,3 +1,5 @@
+from colors import Bitmap, hex_to_rgb
+
 CHAR_WIFI = '\x01'
 CHAR_NO_WIFI = '\x02'
 
@@ -956,12 +958,13 @@ FONT = {
     ],
 }
 
-Bitmap = list
-
-def render_text(text: str) -> Bitmap:
+def render_text(text: str, color: str) -> Bitmap:
     """Render text into an 8-row bitmap (list of columns).
-    Returns a list of columns, where each column is a list of 8 pixel values.
+    Returns a list of columns, where each column is a list of 8 RGB tuples.
     Font rows are top-to-bottom (row 0 = top of glyph)."""
+    rgb = hex_to_rgb(color)
+    black = (0, 0, 0)
+
     columns: Bitmap = []
     first = True
     for ch in text:
@@ -970,12 +973,12 @@ def render_text(text: str) -> Bitmap:
             continue
 
         if not first:
-            columns.append([False] * 8)  # 1px gap
+            columns.append([black] * 8)  # 1px gap
 
         first = False
         char_width = len(glyph[0])
 
         for col in range(char_width):
-            columns.append([bool(glyph[row][col]) for row in range(8)])
+            columns.append([rgb if glyph[row][col] else black for row in range(8)])
 
     return columns

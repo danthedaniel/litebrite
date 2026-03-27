@@ -3,7 +3,15 @@ import network
 import time
 from font import render_text, CHAR_WIFI, CHAR_NO_WIFI
 from microdot import Microdot, Request, urlencode
-from screen import screen, COLS, SCROLL_DELAY_MS
+from screen import screen, COLS, ROWS, SCROLL_DELAY_MS
+from colors import hsv_to_rgb, RGB
+
+
+def rainbow_shader(x: int, _y: int, t: int) -> RGB:
+    """Cycle hues across the x-axis, animated over time."""
+    hue = ((x * 360) // COLS + t * 3 // 50) % 360
+    return hsv_to_rgb(hue)
+
 
 app = Microdot()
 
@@ -54,14 +62,63 @@ async def set_text(req: Request):
         else:
             return '', 303, {'Location': '/?error=' + urlencode(str(e))}
 
-    screen.bitmap = render_text(text)
+    screen.bitmap = render_text(text, "#FFFFFF" if color == "rainbow" else color)
     screen.scrolling = scrolling
-    screen.color = color
+    screen.shader = rainbow_shader if color == 'rainbow' else None
 
     if is_json:
         return {'ok': True}
     else:
         return '', 303, {'Location': '/'}
+
+
+def parse_bitmap_payload(data: dict) -> list:
+    raw_bitmap = data.get("bitmap")
+    if not isinstance(raw_bitmap, list):
+        raise ValueError('expected a list of columns')
+
+    if len(raw_bitmap) != COLS:
+        raise ValueError('bitmap must have ' + str(COLS) + ' columns')
+
+    bitmap = []
+
+    for x, col in enumerate(raw_bitmap):
+        if not isinstance(col, list) or len(col) != ROWS:
+            raise ValueError('column ' + str(x) + ' must have ' + str(ROWS) + ' pixels')
+
+        bitmap_col = []
+
+        for y, pixel in enumerate(col):
+            if not isinstance(pixel, list) or len(pixel) != 3:
+                raise ValueError('pixel at (' + str(x) + ',' + str(y) + ') must be [r, g, b]')
+
+            for color in pixel:
+                if not isinstance(color, int):
+                    raise ValueError('RGB values must be integers at (' + str(x) + ',' + str(y) + ')')
+                if not 0 <= color <= 255:
+                    raise ValueError('RGB values must be 0-255 at (' + str(x) + ',' + str(y) + ')')
+
+            bitmap_col.append(tuple(pixel))
+
+        bitmap.append(bitmap_col)
+
+    return bitmap
+
+
+@app.post('/bitmap')
+async def set_bitmap(req: Request):
+    data = req.json or {}
+
+    try:
+        bitmap = parse_bitmap_payload(data)
+    except ValueError as e:
+        return {'ok': False, 'error': str(e)}, 400
+
+    screen.bitmap = bitmap
+    screen.scrolling = False
+    screen.shader = None
+
+    return {'ok': True}
 
 
 async def display_loop() -> None:
@@ -105,7 +162,7 @@ def main() -> None:
     screen.clear()
     ip = connect_wifi()
 
-    bitmap = render_text(ip)
+    bitmap = render_text(ip, "#FFFFFF")
     screen.bitmap = bitmap
     screen.scrolling = len(bitmap) > COLS
 
@@ -114,7 +171,7 @@ def main() -> None:
 
 
 def show_error(e: Exception) -> None:
-    screen.bitmap = render_text("Error: " + str(e)[0:64])
+    screen.bitmap = render_text("Error: " + str(e)[0:64], "#FF0000")
     screen.scrolling = True
 
     while True:
